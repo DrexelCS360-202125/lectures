@@ -184,7 +184,9 @@
 ; Left fold
 
 (define (foldl f z xs)
-  'not-implemented)
+  (if (null? xs)
+      z
+      (foldl f (f z (first xs)) (rest xs))))
 
 ;; (show-tree (foldl (show-function 'cons) 'null '(1 2 3 4)))
 
