@@ -9,13 +9,21 @@ import Prelude hiding (length, map, take, drop, sum, foldr, foldl)
 --
 
 -- Compute the length of the list l
-length = error "length unimplemented"
+length :: [a] -> Int
+--length xs = if null xs then 0 else 1 + length (tail xs)
+length []     = 0
+length (_:xs) = 1 + length xs
 
 -- Compute the sum of a list of integers
-sum = error "sum unimplemented"
+sum :: Num a => [a] -> a
+sum []     = 0
+sum (x:xs) = x + sum xs
 
 -- Return the nth element of a list, counting from 0.
-nth = error "nth unimplemented"
+nth :: Int -> [a] -> a
+nth _ []     = error "nth: not enough elements"
+nth 0 (x:_)  = x
+nth n (_:xs) = nth (n-1) xs
 
 -- Append two lists
 append = error "append unimplemented"
@@ -31,12 +39,27 @@ drop = error "drop unimplemented"
 --
 
 -- Add two integers
-add :: Int -> Int -> Int
-add x y = x + y
+add2 :: Int -> Int -> Int
+add2 x y = x + y
 
 -- Increment an integer
 inc :: Int -> Int
 inc = error "inc unimplemented"
+
+--
+-- Recursive Types (PIH 8.4)
+--
+
+data Nat = Zero | Succ Nat
+
+nat2int :: Nat -> Integer
+nat2int = error "nat2int unimplemented"
+
+int2nat :: Integer -> Nat
+int2nat = error "int2nat unimplemented"
+
+add :: Nat -> Nat -> Nat
+add = error "add unimplemented"
 
 --
 -- Higher-order functions
