@@ -26,13 +26,21 @@ nth 0 (x:_)  = x
 nth n (_:xs) = nth (n-1) xs
 
 -- Append two lists
-append = error "append unimplemented"
+append :: [a] -> [a] -> [a]
+append []     ys = ys
+append (x:xs) ys = x : append xs ys
 
 -- Take the first n elements of a list
-take = error "take unimplemented"
+take :: Int -> [a] -> [a]
+take 0 _      = []
+take _ []     = []
+take n (x:xs) = x : take (n-1) xs
 
 -- Drop the first n elements of a list
-drop = error "drop unimplemented"
+drop :: Int -> [a] -> [a]
+drop 0 xs     = xs
+drop _ []     = []
+drop n (_:xs) = drop (n-1) xs
 
 --
 -- Partial application
@@ -53,13 +61,16 @@ inc = error "inc unimplemented"
 data Nat = Zero | Succ Nat
 
 nat2int :: Nat -> Integer
-nat2int = error "nat2int unimplemented"
+nat2int Zero     = 0
+nat2int (Succ n) = 1 + nat2int n
 
 int2nat :: Integer -> Nat
-int2nat = error "int2nat unimplemented"
+int2nat 0 = Zero
+int2nat n = Succ (int2nat (n-1))
 
 add :: Nat -> Nat -> Nat
-add = error "add unimplemented"
+add Zero     n = n
+add (Succ m) n = Succ (add m n)
 
 --
 -- Higher-order functions
@@ -71,13 +82,17 @@ incAll = error "incAll unimplemented"
 -- Increment all elements of a list by a constant
 addAll = error "addAll unimplemented"
 
-map = error "map unimplemented"
+map :: (a -> b) -> [a] -> [b]
+map _ []     = []
+map f (x:xs) = f x : map f xs
 
 -- Calculate the squares of a list of numbers. Make the function non-recursive.
-squares = error "squares unimplemented"
+squares :: Num a => [a] -> [a]
+squares xs = map (\x -> x*x) xs
 
 -- Now write squares using a list comprehension. We give this variant the name squares'
-squares' = error "squares' unimplemented"
+squares' :: Num a => [a] -> [a]
+squares' xs = [x*x | x <- xs]
 
 curry = error "curry unimplemented"
 
