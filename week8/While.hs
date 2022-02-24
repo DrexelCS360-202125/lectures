@@ -29,27 +29,36 @@ data Stm  = Assign Var Aexp | Skip | Seq Stm Stm
 --
 
 -- Fix this type definition!
-type State = ()
+type State = Var -> Z
 
 empty :: State
-empty = error "empty: not yet defined"
+empty v = error $ "Unbound variable: " ++ v
 
 insert :: Var -> Z -> State -> State
-insert = error "insert: not yet defined"
+insert v z s = \v' -> if v' == v then z else s v'
 
 lookup :: Var -> State -> Z
-lookup = error "lookup: not yet defined"
+lookup v s = s v
 
 --
 -- Big-step semantics for arithmetic expression
 --
 
 abig :: State -> Aexp -> Z
-abig = error "abig: not yet defined"
+abig _ (Const z)   = z
+abig s (Var v)     = s v
+abig s (Add e1 e2) = abig s e1 + abig s e2
+abig s (Sub e1 e2) = abig s e1 - abig s e2
+abig s (Mul e1 e2) = abig s e1 * abig s e2
 
 --
 -- Big-step semantics for Boolean expression
 --
 
 bbig :: State -> Bexp -> Bool
-bbig = error "bbig: not yet defined"
+bbig _ BTrue       = True
+bbig _ BFalse      = False
+bbig s (Eq e1 e2)  = abig s e1 == abig s e2
+bbig s (Le e1 e2)  = abig s e1 <= abig s e2
+bbig s (Not e)     = not (bbig s e)
+bbig s (And e1 e2) = bbig s e1 && bbig s e2
