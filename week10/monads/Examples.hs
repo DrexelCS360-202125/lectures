@@ -24,17 +24,21 @@ instance Functor [] where
 
 instance Functor Maybe where
     -- fmap :: (a -> b) -> Maybe a -> Maybe b
-    fmap = undefined
+    fmap _ Nothing  = Nothing
+    fmap f (Just x) = Just (f x)
 
 instance Functor Tree where
     -- fmap :: (a -> b) -> Tree a -> Tree b
-    fmap = undefined
+    fmap f (Leaf x)   = Leaf (f x)
+    fmap f (Node l r) = Node (fmap f l) (fmap f r)
 
 data Either a b = Left a
                 | Right b
   deriving (Eq, Ord, Show, Read)
 
--- instance Functor Either... where
+instance Functor (Either a) where
+    fmap _ (Left x)  = Left x
+    fmap f (Right x) = Right (f x)
 
 --
 -- Applicatives
@@ -42,10 +46,15 @@ data Either a b = Left a
 
 instance Applicative Maybe where
     -- pure :: a -> Maybe a
-    pure = undefined
+    pure x = Just x
 
     -- (<*>) :: Maybe (a -> b) -> Maybe a -> Maybe b
-    (<*>) = undefined
+    Nothing <*> _ = Nothing
+    Just f  <*> x = fmap f x
+{-
+    Just _  <*> Nothing = Nothing
+    Just f  <*> Just x  = Just (f x)
+-}
 
 {-
 instance Applicative [] where
@@ -62,10 +71,11 @@ instance Applicative [] where
 
 instance Monad Maybe where
   -- return :: a -> Maybe a
-  return = undefined
+  return x = pure x
 
   -- (>>=) :: Maybe a -> (a -> Maybe b) -> Maybe b
-  (>>=) = undefined
+  Nothing >>= _ = Nothing
+  Just x  >>= f = f x
 
 --
 -- Interpreter
@@ -150,4 +160,7 @@ mapM f (x:xs) = do y  <- f x
                    return (y:ys)
 
 filterM :: Monad m => (a -> m Bool) -> [a] -> m [a]
-filterM = undefined
+filterM _ []     = return []
+filterM p (x:xs) = do flag <- p x
+                      ys <- filterM p xs
+                      return $ if flag then x:ys else ys
